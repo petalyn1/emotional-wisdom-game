@@ -59,6 +59,1451 @@
             </svg>
         );
 
+        const Eye = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+        );
+
+        const EmotionalWisdomGame = () => {
+            const [currentScenario, setCurrentScenario] = useState(0);
+            const [gameStage, setGameStage] = useState('scenario');
+            const [selectedEmotion, setSelectedEmotion] = useState(null);
+            const [recognizedPattern, setRecognizedPattern] = useState(null);
+            const [selectedPrinciples, setSelectedPrinciples] = useState([]);
+            const [selectedResponse, setSelectedResponse] = useState(null);
+            const [insights, setInsights] = useState([]);
+
+            const scenarios = [
+                {
+                    id: 1,
+                    title: "The Unsolicited Advice",
+                    situation: "Your adult daughter calls and mentions she's tired from work. Before you can respond, she says, 'Mom, please don't tell me what to do. I just need to vent.' You feel a familiar tightness in your chest.",
+                    emotions: [
+                        { id: 'hurt', label: 'Hurt', desc: 'She doesn\'t want my help' },
+                        { id: 'defensive', label: 'Defensive', desc: 'I was just trying to help' },
+                        { id: 'worried', label: 'Worried', desc: 'Is she pushing me away?' },
+                        { id: 'recognized', label: 'Recognized', desc: 'She knows me well' }
+                    ],
+                    patterns: [
+                        { id: 'role', label: 'My identity as helper is being challenged', insight: 'When being needed feels like love' },
+                        { id: 'control', label: 'I want to control how she sees me', insight: 'The exhausting work of managing perceptions' },
+                        { id: 'boundary', label: 'She\'s setting a healthy boundary', insight: 'Can I receive it as care, not rejection?' },
+                        { id: 'love', label: 'We both want connection, just differently', insight: 'Love can look like listening, not fixing' }
+                    ],
+                    principles: [
+                        { id: 'love', label: 'I love her and want connection', type: 'core' },
+                        { id: 'separate', label: 'She is separate from me', type: 'core' },
+                        { id: 'capable', label: 'She is capable of solving her problems', type: 'core' },
+                        { id: 'listening', label: 'Listening is a form of love', type: 'core' },
+                        { id: 'control', label: 'I cannot control how she sees me', type: 'boundary' },
+                        { id: 'worth', label: 'My worth isn\'t tied to being needed', type: 'boundary' }
+                    ],
+                    responses: [
+                        { 
+                            id: 'immediate', 
+                            text: '"Well, I was just going to listen! I wasn\'t going to give advice."',
+                            pattern: 'Defensive reaction - proving she\'s wrong about you',
+                            outcome: 'Creates distance; focuses on being right rather than connection'
+                        },
+                        { 
+                            id: 'withdrawn', 
+                            text: '"Okay, sorry." (Then feeling hurt and pulling back)',
+                            pattern: 'Protective withdrawal - avoiding the feeling',
+                            outcome: 'Avoids conflict but builds resentment; she may sense your hurt'
+                        },
+                        { 
+                            id: 'principled', 
+                            text: '"I hear you. I\'m here to listen." (Noticing the urge to fix, letting it pass)',
+                            pattern: 'First principles response - honoring both her needs and yours',
+                            outcome: 'Opens space for real connection; you feel grounded in your choice'
+                        },
+                        { 
+                            id: 'curious', 
+                            text: '"Thanks for telling me what you need. That helps me be here for you better."',
+                            pattern: 'First principles response - receiving her boundary as information',
+                            outcome: 'Models healthy boundaries; strengthens trust and communication'
+                        }
+                    ]
+                },
+                {
+                    id: 2,
+                    title: "The Friend Who Cancels",
+                    situation: "A close friend cancels lunch plans for the third time this month, texting 'Something came up, so sorry!' You notice yourself starting to compose a response immediately, fingers already moving.",
+                    emotions: [
+                        { id: 'abandoned', label: 'Abandoned', desc: 'She doesn\'t value our friendship' },
+                        { id: 'angry', label: 'Angry', desc: 'This is disrespectful' },
+                        { id: 'anxious', label: 'Anxious', desc: 'Did I do something wrong?' },
+                        { id: 'curious', label: 'Curious', desc: 'I wonder what\'s happening for her' }
+                    ],
+                    patterns: [
+                        { id: 'story', label: 'I\'m making up stories about what this means', insight: 'Your narrative might not be her reality' },
+                        { id: 'pattern', label: 'This is a pattern worth addressing', insight: 'One event is data; three is a trend' },
+                        { id: 'urgency', label: 'The urgency to respond is just a feeling', insight: 'Space between stimulus and response is power' },
+                        { id: 'standard', label: 'My standards for friendship matter', insight: 'Boundaries protect; standards guide' }
+                    ],
+                    principles: [
+                        { id: 'valued', label: 'I deserve relationships where I feel valued', type: 'core' },
+                        { id: 'story', label: 'I don\'t know her full story right now', type: 'core' },
+                        { id: 'communicate', label: 'I can communicate my needs clearly', type: 'core' },
+                        { id: 'patterns', label: 'Patterns matter more than single events', type: 'core' },
+                        { id: 'respond', label: 'I can respond later; urgency is a feeling', type: 'boundary' },
+                        { id: 'both', label: 'Both our needs can matter', type: 'boundary' }
+                    ],
+                    responses: [
+                        { 
+                            id: 'passive', 
+                            text: '"No problem! 😊" (While feeling hurt inside)',
+                            pattern: 'People-pleasing - suppressing your truth',
+                            outcome: 'Builds internal resentment; she doesn\'t know this bothers you'
+                        },
+                        { 
+                            id: 'aggressive', 
+                            text: '"You\'ve cancelled three times. Clearly you don\'t want to see me."',
+                            pattern: 'Immediate reaction - assuming the worst',
+                            outcome: 'Puts her on defense; closes conversation before understanding'
+                        },
+                        { 
+                            id: 'pause', 
+                            text: '(Wait an hour before responding, let the initial reaction settle)',
+                            pattern: 'First principles approach - creating space between feeling and action',
+                            outcome: 'You respond from clarity rather than hurt; can assess what you truly want'
+                        },
+                        { 
+                            id: 'honest', 
+                            text: '"I understand things come up. I\'m noticing this is the third time, and I\'m feeling disconnected. Can we find a time that works better?"',
+                            pattern: 'First principles response - honest and boundaried',
+                            outcome: 'Opens real conversation; honors your feelings and invites problem-solving'
+                        }
+                    ]
+                },
+                {
+                    id: 3,
+                    title: "The Partner's Tone",
+                    situation: "Your partner asks, 'Did you remember to call the plumber?' in a tone that feels critical. Your stomach clenches. You did forget, and you can feel yourself about to either apologize profusely or snap back defensively.",
+                    emotions: [
+                        { id: 'shame', label: 'Shame', desc: 'I messed up again' },
+                        { id: 'defensive', label: 'Defensive', desc: 'Why is this my job?' },
+                        { id: 'inadequate', label: 'Inadequate', desc: 'I can never do enough' },
+                        { id: 'neutral', label: 'Neutral', desc: 'I forgot; that\'s just information' }
+                    ],
+                    patterns: [
+                        { id: 'spiral', label: 'I\'m catastrophizing one mistake', insight: 'Mistakes don\'t define your worth' },
+                        { id: 'projection', label: 'His tone might not be about me', insight: 'People\'s stress isn\'t always your story' },
+                        { id: 'size', label: 'I\'m making this bigger than it needs to be', insight: 'Right-sizing problems is a skill' },
+                        { id: 'team', label: 'We\'re solving a problem together', insight: 'Partnership over perfection' }
+                    ],
+                    principles: [
+                        { id: 'mistake', label: 'Making mistakes doesn\'t define my worth', type: 'core' },
+                        { id: 'tone', label: 'His tone might be about his stress, not about me', type: 'core' },
+                        { id: 'fix', label: 'I can simply fix the mistake', type: 'core' },
+                        { id: 'team', label: 'We\'re on the same team', type: 'core' },
+                        { id: 'interpret', label: 'My interpretation of his tone might not be accurate', type: 'boundary' },
+                        { id: 'overfunction', label: 'I don\'t need to over-apologize or over-explain', type: 'boundary' }
+                    ],
+                    responses: [
+                        { 
+                            id: 'overexplain', 
+                            text: '"I\'m so sorry! I got distracted by work and then the kids called, and I completely—"',
+                            pattern: 'Over-functioning - proving you\'re not bad',
+                            outcome: 'Reinforces shame; makes it bigger than it needs to be'
+                        },
+                        { 
+                            id: 'counter', 
+                            text: '"Well, you could have called them yourself!"',
+                            pattern: 'Defensive deflection - making it about fairness',
+                            outcome: 'Creates conflict; misses the chance to just solve it together'
+                        },
+                        { 
+                            id: 'simple', 
+                            text: '"Oh shoot, I forgot. I\'ll call them right now."',
+                            pattern: 'First principles response - simple ownership',
+                            outcome: 'Addresses the actual problem; doesn\'t make it about your worth'
+                        },
+                        { 
+                            id: 'curious', 
+                            text: '"I did forget—calling now. You sound stressed, everything okay?"',
+                            pattern: 'First principles response - addressing both the task and connection',
+                            outcome: 'Solves the problem and opens space for real communication'
+                        }
+                    ]
+                },
+                {
+                    id: 4,
+                    title: "The Grief Interrogation",
+                    situation: "At a gathering, someone you barely know asks, 'So, how are you really doing after losing your son?' Her eyes are wide with curiosity. You feel everyone's attention shift to you, waiting.",
+                    emotions: [
+                        { id: 'invaded', label: 'Invaded', desc: 'This is too intimate for this context' },
+                        { id: 'angry', label: 'Angry', desc: 'My grief is not entertainment' },
+                        { id: 'trapped', label: 'Trapped', desc: 'Everyone is watching' },
+                        { id: 'tired', label: 'Exhausted', desc: 'Not this again' }
+                    ],
+                    patterns: [
+                        { id: 'perform', label: 'I feel pressure to perform grief correctly', insight: 'Your grief belongs to you, not their curiosity' },
+                        { id: 'boundary', label: 'This is a boundary violation masked as concern', insight: 'Invasive questions don\'t deserve intimate answers' },
+                        { id: 'protect', label: 'I can protect my tender places', insight: 'Privacy is not the same as hiding' },
+                        { id: 'witness', label: 'She might genuinely not know better', insight: 'You can be kind and boundaried at once' }
+                    ],
+                    principles: [
+                        { id: 'mine', label: 'My grief is mine to share or not share', type: 'core' },
+                        { id: 'owe', label: 'I don\'t owe anyone access to my pain', type: 'core' },
+                        { id: 'kind', label: 'I can be kind without being open', type: 'core' },
+                        { id: 'witness', label: 'Her awkwardness doesn\'t require my performance', type: 'core' },
+                        { id: 'dignity', label: 'I can maintain my dignity in this moment', type: 'boundary' },
+                        { id: 'escape', label: 'I can exit conversations that don\'t serve me', type: 'boundary' }
+                    ],
+                    responses: [
+                        { 
+                            id: 'comply', 
+                            text: '"It\'s been really hard. Some days I can\'t even..." (sharing more than you want)',
+                            pattern: 'Compliance - meeting the demand for vulnerability',
+                            outcome: 'You give away something precious; feel exposed and resentful'
+                        },
+                        { 
+                            id: 'deflect', 
+                            text: '"I\'m fine, thanks." (Then quickly changing the subject)',
+                            pattern: 'Deflection - protecting yourself but leaving her clueless',
+                            outcome: 'Preserves privacy but doesn\'t address the boundary violation'
+                        },
+                        { 
+                            id: 'honest', 
+                            text: '"I appreciate your concern, but I\'m not ready to talk about it here."',
+                            pattern: 'First principles response - clear boundary with grace',
+                            outcome: 'Protects your grief while teaching her about appropriate intimacy'
+                        },
+                        { 
+                            id: 'redirect', 
+                            text: '"That\'s tender territory. Tell me, how have you been?"',
+                            pattern: 'First principles response - boundary without explanation',
+                            outcome: 'Maintains dignity and redirects without over-explaining'
+                        }
+                    ]
+                },
+                {
+                    id: 5,
+                    title: "The Pressure to Reconcile",
+                    situation: "Your sister emails: 'Mom wants us all together for her birthday. I know you and Dad aren\'t speaking, but can\'t you just let it go? It\'s been two years. Do it for Mom.' You feel the familiar weight of being the 'difficult' one.",
+                    emotions: [
+                        { id: 'guilty', label: 'Guilty', desc: 'Am I being selfish?' },
+                        { id: 'angry', label: 'Angry', desc: 'Why is this my responsibility?' },
+                        { id: 'misunderstood', label: 'Misunderstood', desc: 'She doesn\'t know what happened' },
+                        { id: 'clear', label: 'Clear', desc: 'I know why I made this choice' }
+                    ],
+                    patterns: [
+                        { id: 'scapegoat', label: 'I\'m being made responsible for everyone\'s comfort', insight: 'Peace-keeping isn\'t the same as peace' },
+                        { id: 'minimize', label: 'My reasons are being minimized as petty', insight: 'You don\'t have to justify your boundaries' },
+                        { id: 'leverage', label: 'Mom\'s feelings are being used as leverage', insight: 'Triangulation is manipulation, even from family' },
+                        { id: 'standard', label: 'I have standards for how I\'m treated', insight: 'Maintaining standards isn\'t the same as holding grudges' }
+                    ],
+                    principles: [
+                        { id: 'reasons', label: 'I have valid reasons for my choices', type: 'core' },
+                        { id: 'explain', label: 'I don\'t have to explain my boundaries repeatedly', type: 'core' },
+                        { id: 'peace', label: 'False peace is not actually peaceful', type: 'core' },
+                        { id: 'responsibility', label: 'I\'m not responsible for everyone\'s feelings', type: 'core' },
+                        { id: 'standards', label: 'Standards guide my relationships', type: 'boundary' },
+                        { id: 'pressure', label: 'Pressure is information about the other person', type: 'boundary' }
+                    ],
+                    responses: [
+                        { 
+                            id: 'cave', 
+                            text: '"Fine. I\'ll come. But I\'m not happy about it."',
+                            pattern: 'Caving to pressure - abandoning your standard',
+                            outcome: 'You betray yourself; build resentment toward everyone involved'
+                        },
+                        { 
+                            id: 'defensive', 
+                            text: '"You have no idea what he did. If you knew, you wouldn\'t be asking me this!"',
+                            pattern: 'Over-explaining - trying to get her to understand',
+                            outcome: 'You give away your power by needing her validation'
+                        },
+                        { 
+                            id: 'clear', 
+                            text: '"I understand this is hard for you. My boundary with Dad stands. I\'d love to celebrate Mom another way."',
+                            pattern: 'First principles response - clear without defending',
+                            outcome: 'Maintains your standard while offering alternative connection'
+                        },
+                        { 
+                            id: 'direct', 
+                            text: '"I hear you want me there. The answer is no. I\'m not discussing it further."',
+                            pattern: 'First principles response - ending the negotiation',
+                            outcome: 'Firm boundary; may create temporary discomfort but ends the pressure'
+                        }
+                    ]
+                },
+                {
+                    id: 6,
+                    title: "The Values Compromise",
+                    situation: "A friend asks you to lie to her husband about where she was last night. 'Just say I was with you. It\'s not a big deal—I just need some space and he\'s so controlling.' You feel torn between loyalty and integrity.",
+                    emotions: [
+                        { id: 'uncomfortable', label: 'Uncomfortable', desc: 'This doesn\'t feel right' },
+                        { id: 'conflicted', label: 'Conflicted', desc: 'I want to support her but...' },
+                        { id: 'used', label: 'Used', desc: 'I\'m being pulled into their dynamic' },
+                        { id: 'clear', label: 'Clear', desc: 'I know what my values are' }
+                    ],
+                    patterns: [
+                        { id: 'triangle', label: 'I\'m being triangulated into their marriage', insight: 'Their issues aren\'t your problem to solve' },
+                        { id: 'loyalty', label: 'Loyalty is being defined as complicity', insight: 'Real friendship doesn\'t require you to compromise yourself' },
+                        { id: 'cost', label: 'There\'s a cost to saying yes AND saying no', insight: 'Choose the cost you can live with' },
+                        { id: 'values', label: 'My integrity is being tested', insight: 'Small compromises become patterns' }
+                    ],
+                    principles: [
+                        { id: 'integrity', label: 'My integrity isn\'t for sale', type: 'core' },
+                        { id: 'not_my_fight', label: 'Their marriage problems aren\'t mine to fix', type: 'core' },
+                        { id: 'loyalty', label: 'True friendship doesn\'t require lying', type: 'core' },
+                        { id: 'uncomfortable', label: 'I can let her be uncomfortable with my no', type: 'core' },
+                        { id: 'consequence', label: 'She can handle the consequences of her choices', type: 'boundary' },
+                        { id: 'line', label: 'I get to decide where my lines are', type: 'boundary' }
+                    ],
+                    responses: [
+                        { 
+                            id: 'agree', 
+                            text: '"Okay, fine. But this is the last time."',
+                            pattern: 'Compromising values - trying to preserve the friendship',
+                            outcome: 'You betray your integrity; she learns she can pressure you'
+                        },
+                        { 
+                            id: 'judge', 
+                            text: '"Are you serious? You\'re asking me to lie? What are you even doing?"',
+                            pattern: 'Judgment and deflection - making it about her choices',
+                            outcome: 'Creates defensiveness; damages the friendship without holding your boundary'
+                        },
+                        { 
+                            id: 'boundary', 
+                            text: '"I care about you, and I\'m not comfortable lying. I\'m not the right person for this."',
+                            pattern: 'First principles response - declining without judgment',
+                            outcome: 'Maintains integrity; shows care while holding the line'
+                        },
+                        { 
+                            id: 'reflect', 
+                            text: '"I hear you\'re struggling. I can\'t lie for you, but I\'m here if you want to talk about what\'s really going on."',
+                            pattern: 'First principles response - offering real support',
+                            outcome: 'Redirects to genuine connection; holds boundary while staying present'
+                        }
+                    ]
+                },
+                {
+                    id: 7,
+                    title: "The Sensitive One",
+                    situation: "You gently point out that your friend showed up 30 minutes late without a heads-up. She tears up: 'I\'m just so sensitive. I can\'t handle any criticism. Now I feel terrible about myself.' You watch your concern shift to... managing her feelings about your feelings.",
+                    emotions: [
+                        { id: 'manipulated', label: 'Manipulated', desc: 'Wait, how did I become the bad guy?' },
+                        { id: 'guilty', label: 'Guilty', desc: 'I hurt her feelings' },
+                        { id: 'frustrated', label: 'Frustrated', desc: 'This happens every time' },
+                        { id: 'clear', label: 'Clear', desc: 'This is a pattern I recognize' }
+                    ],
+                    patterns: [
+                        { id: 'weapon', label: 'Vulnerability is being weaponized', insight: 'Tears can be tools of control' },
+                        { id: 'reverse', label: 'The issue has been reversed', insight: 'You\'re now managing her feelings about your boundary' },
+                        { id: 'immune', label: 'She\'s made herself immune to feedback', insight: 'Fragility can be a fortress' },
+                        { id: 'pattern', label: 'This is how accountability gets avoided', insight: 'The tears work—that\'s why they keep coming' }
+                    ],
+                    principles: [
+                        { id: 'valid', label: 'My feelings about being late are valid', type: 'core' },
+                        { id: 'both', label: 'Both of us can have feelings', type: 'core' },
+                        { id: 'responsible', label: 'I\'m not responsible for her self-esteem', type: 'core' },
+                        { id: 'feedback', label: 'Feedback is not abuse', type: 'core' },
+                        { id: 'pattern', label: 'Patterns matter more than moments', type: 'boundary' },
+                        { id: 'stay', label: 'I can stay focused on the original issue', type: 'boundary' }
+                    ],
+                    responses: [
+                        { 
+                            id: 'rescue', 
+                            text: '"Oh no, don\'t cry! It\'s fine, really. I\'m sorry I brought it up."',
+                            pattern: 'Rescuing - abandoning your concern to manage hers',
+                            outcome: 'Issue remains unaddressed; pattern continues; you feel used'
+                        },
+                        { 
+                            id: 'callout', 
+                            text: '"You do this every time. You cry so I can\'t talk about anything real."',
+                            pattern: 'Confrontation - naming the manipulation',
+                            outcome: 'May be accurate but creates escalation; unlikely to shift pattern'
+                        },
+                        { 
+                            id: 'hold', 
+                            text: '"I hear you\'re upset. And I still need to be able to tell you when something bothers me."',
+                            pattern: 'First principles response - both/and without rescuing',
+                            outcome: 'Maintains your boundary while acknowledging her feelings'
+                        },
+                        { 
+                            id: 'stay', 
+                            text: '"I care about you, and I need us to be able to talk about things like this. Can we both take a breath?"',
+                            pattern: 'First principles response - staying focused on the relationship need',
+                            outcome: 'Invites adult conversation; doesn\'t reward the deflection with silence'
+                        }
+                    ]
+                },
+                {
+                    id: 8,
+                    title: "The Constant Crisis",
+                    situation: "Your sister texts at 10pm: 'EMERGENCY. Call me now.' You call, heart racing. She wants to vent about her coworker. Again. This is the third 'emergency' this week. None were actual emergencies.",
+                    emotions: [
+                        { id: 'exhausted', label: 'Exhausted', desc: 'I can\'t keep doing this' },
+                        { id: 'resentful', label: 'Resentful', desc: 'My time doesn\'t seem to matter' },
+                        { id: 'guilty', label: 'Guilty', desc: 'She needs me' },
+                        { id: 'clear', label: 'Clear', desc: 'This is a pattern of behavior' }
+                    ],
+                    patterns: [
+                        { id: 'hijack', label: 'My attention is being hijacked', insight: 'Crisis mode is a relational strategy' },
+                        { id: 'train', label: 'I\'ve trained her that this works', insight: 'She texts "emergency" because you respond' },
+                        { id: 'caretaker', label: 'I\'m functioning as her emotional regulator', insight: 'This isn\'t sustainable for you' },
+                        { id: 'cost', label: 'My responsiveness has a hidden cost', insight: 'Being "there for her" is making you unavailable to yourself' }
+                    ],
+                    principles: [
+                        { id: 'emergency', label: 'Not everything urgent is an emergency', type: 'core' },
+                        { id: 'time', label: 'My time and rest have value', type: 'core' },
+                        { id: 'capable', label: 'She is capable of regulating herself', type: 'core' },
+                        { id: 'teach', label: 'I can teach people how to reach me', type: 'core' },
+                        { id: 'availability', label: 'My availability is not infinite', type: 'boundary' },
+                        { id: 'guilt', label: 'Her distress doesn\'t obligate my response', type: 'boundary' }
+                    ],
+                    responses: [
+                        { 
+                            id: 'comply', 
+                            text: '(Answer immediately, listen for an hour, go to bed exhausted)',
+                            pattern: 'Over-functioning - being endlessly available',
+                            outcome: 'Your needs disappear; pattern intensifies; resentment grows'
+                        },
+                        { 
+                            id: 'ignore', 
+                            text: '(Turn off phone, feel guilty, dread the next time)',
+                            pattern: 'Withdrawal - avoiding without addressing',
+                            outcome: 'Temporary relief but doesn\'t change the pattern; guilt lingers'
+                        },
+                        { 
+                            id: 'boundaries', 
+                            text: '"I can talk for 10 minutes. If it\'s not an actual emergency, can we catch up tomorrow?"',
+                            pattern: 'First principles response - clear limit with care',
+                            outcome: 'Sets boundary while staying connected; teaches appropriate use of "emergency"'
+                        },
+                        { 
+                            id: 'reset', 
+                            text: '"I love you and I need us to redefine emergency. I\'m not available for work venting at 10pm. Can we talk about a better system?"',
+                            pattern: 'First principles response - resetting the relational contract',
+                            outcome: 'Addresses the pattern directly; invites collaboration on healthier dynamics'
+                        }
+                    ]
+                },
+                {
+                    id: 9,
+                    title: "The Debt Collector",
+                    situation: "Your mother-in-law says, 'After everything I\'ve done for you—watching the kids, hosting holidays—and you can\'t even come to my birthday dinner?' You helped with the kids twice. She\'s hosted holidays... that you cooked for and cleaned up after.",
+                    emotions: [
+                        { id: 'indignant', label: 'Indignant', desc: 'That\'s not how it happened' },
+                        { id: 'trapped', label: 'Trapped', desc: 'How do I respond to this?' },
+                        { id: 'tired', label: 'Tired', desc: 'Here we go again' },
+                        { id: 'clear', label: 'Clear', desc: 'I see what\'s happening' }
+                    ],
+                    patterns: [
+                        { id: 'ledger', label: 'She keeps a ledger; I don\'t owe her one', insight: 'Gifts with strings attached aren\'t gifts' },
+                        { id: 'rewrite', label: 'History is being rewritten', insight: 'Covert narcissists reframe reality to center themselves' },
+                        { id: 'obligation', label: 'Love is being framed as debt', insight: 'You can\'t have authentic relationship on a tab' },
+                        { id: 'audience', label: 'This might be performed for others', insight: 'Public guilt-trips seek witnesses' }
+                    ],
+                    principles: [
+                        { id: 'gifts', label: 'True gifts don\'t create debt', type: 'core' },
+                        { id: 'narrative', label: 'I don\'t have to accept her narrative', type: 'core' },
+                        { id: 'defend', label: 'I don\'t have to defend my memory', type: 'core' },
+                        { id: 'relationship', label: 'Healthy relationships aren\'t transactional', type: 'core' },
+                        { id: 'guilt', label: 'Manufactured guilt has no power over me', type: 'boundary' },
+                        { id: 'facts', label: 'I can let her distortion stand without correcting it', type: 'boundary' }
+                    ],
+                    responses: [
+                        { 
+                            id: 'comply', 
+                            text: '"You\'re right, I\'m sorry. Of course I\'ll come."',
+                            pattern: 'Appeasing - accepting false debt',
+                            outcome: 'Reinforces her control; builds your resentment; pattern continues'
+                        },
+                        { 
+                            id: 'correct', 
+                            text: '"Actually, you watched the kids twice, and I did all the cooking and cleanup at holidays..."',
+                            pattern: 'Defending reality - trying to make her see the truth',
+                            outcome: 'She won\'t concede; you look petty; energy wasted'
+                        },
+                        { 
+                            id: 'deflect', 
+                            text: '"I appreciate everything you do. I still can\'t make dinner. Let\'s find another time."',
+                            pattern: 'First principles response - sidestepping the trap',
+                            outcome: 'Maintains boundary without taking the bait; acknowledges without agreeing'
+                        },
+                        { 
+                            id: 'clear', 
+                            text: '"I don\'t see our relationship as transactional. I can\'t make dinner, and that\'s not about what anyone has or hasn\'t done."',
+                            pattern: 'First principles response - naming the pattern',
+                            outcome: 'Directly addresses the manipulation; may create discomfort but ends the game'
+                        }
+                    ]
+                },
+                {
+                    id: 10,
+                    title: 'The "I\'m Fine" Freeze-Out',
+                    situation: 'You ask your partner if something\'s wrong. He says "I\'m fine" in a tone that clearly means the opposite, then gives you the silent treatment for the next two hours. You find yourself walking on eggshells, reviewing everything you did today.',
+                    emotions: [
+                        { id: 'anxious', label: 'Anxious', desc: 'What did I do wrong?' },
+                        { id: 'angry', label: 'Angry', desc: 'Just tell me what\'s wrong!' },
+                        { id: 'hypervigilant', label: 'Hypervigilant', desc: 'I\'m scanning for clues' },
+                        { id: 'tired', label: 'Tired', desc: 'Not this dance again' }
+                    ],
+                    patterns: [
+                        { id: 'punishment', label: 'Silence is being used as punishment', insight: 'Withholding is a form of control' },
+                        { id: 'mindread', label: 'I\'m expected to read his mind', insight: 'You can\'t solve a problem he won\'t name' },
+                        { id: 'power', label: 'He has the power; I\'m scrambling', insight: 'Notice who\'s doing all the emotional work' },
+                        { id: 'responsibility', label: 'I\'m taking responsibility for his feelings', insight: 'His discomfort is not your emergency' }
+                    ],
+                    principles: [
+                        { id: 'words', label: 'I can only respond to words, not vibes', type: 'core' },
+                        { id: 'mindreader', label: 'I\'m not a mind reader', type: 'core' },
+                        { id: 'adult', label: 'Adults can use their words', type: 'core' },
+                        { id: 'both', label: 'We both have to participate', type: 'core' },
+                        { id: 'chase', label: 'I don\'t have to chase him down', type: 'boundary' },
+                        { id: 'available', label: 'I can stay available without pursuing', type: 'boundary' }
+                    ],
+                    responses: [
+                        { 
+                            id: 'pursue', 
+                            text: '"Please, just tell me what I did. I can\'t fix it if you won\'t talk to me."',
+                            pattern: 'Pursuing - taking responsibility for his emotional state',
+                            outcome: 'Reinforces dynamic; you exhaust yourself; he learns silence works'
+                        },
+                        { 
+                            id: 'withdraw', 
+                            text: '(Give him the same silent treatment back)',
+                            pattern: 'Mirroring - fighting passive-aggression with passive-aggression',
+                            outcome: 'Escalates the pattern; nobody wins; connection deteriorates'
+                        },
+                        { 
+                            id: 'name', 
+                            text: '"You say you\'re fine, but your silence says otherwise. I\'m here when you\'re ready to talk."',
+                            pattern: 'First principles response - naming without pursuing',
+                            outcome: 'Identifies the contradiction; stays available without chasing'
+                        },
+                        { 
+                            id: 'boundary', 
+                            text: '"I asked, you said you\'re fine. I\'m going to trust that and go about my evening. Let me know if you want to talk."',
+                            pattern: 'First principles response - taking him at his word',
+                            outcome: 'Refuses to play the guessing game; models direct communication'
+                        }
+                    ]
+                },
+                {
+                    id: 11,
+                    title: "The Concerned Critique",
+                    situation: 'Your friend looks you up and down and says, "I\'m just worried about you. You\'ve gained weight and you seem so stressed. Are you taking care of yourself?" Her voice drips with concern. Her eyes spark with something else.',
+                    emotions: [
+                        { id: 'stung', label: 'Stung', desc: 'That felt like an attack' },
+                        { id: 'defended', label: 'Defensive', desc: 'I want to explain myself' },
+                        { id: 'clear', label: 'Clear', desc: 'I know what just happened' },
+                        { id: 'amused', label: 'Amused', desc: 'Oh, honey' }
+                    ],
+                    patterns: [
+                        { id: 'disguise', label: 'Criticism is disguised as concern', insight: 'Passive-aggression loves to wear a caring mask' },
+                        { id: 'power', label: 'She\'s positioned herself above me', insight: 'Notice who\'s the helper and who needs help' },
+                        { id: 'deflect', label: 'If I object, I\'m being "too sensitive"', insight: 'The trap is that she was "just trying to help"' },
+                        { id: 'bait', label: 'This is bait', insight: 'Don\'t defend, don\'t explain—just don\'t bite' }
+                    ],
+                    principles: [
+                        { id: 'body', label: 'My body is not open for commentary', type: 'core' },
+                        { id: 'concern', label: 'Concern doesn\'t entitle people to critique', type: 'core' },
+                        { id: 'explain', label: 'I don\'t owe her explanations', type: 'core' },
+                        { id: 'intention', label: 'Impact matters more than intention', type: 'core' },
+                        { id: 'bite', label: 'I don\'t have to take the bait', type: 'boundary' },
+                        { id: 'redirect', label: 'I can redirect without defending', type: 'boundary' }
+                    ],
+                    responses: [
+                        { 
+                            id: 'explain', 
+                            text: '"Actually, I\'ve been dealing with a lot and I\'m doing my best..."',
+                            pattern: 'Defending - justifying yourself',
+                            outcome: 'You give her power; she gets information; pattern continues'
+                        },
+                        { 
+                            id: 'attack', 
+                            text: '"Wow, that\'s rude. Maybe focus on your own life?"',
+                            pattern: 'Counter-attack - matching her energy',
+                            outcome: 'Escalates; she gets to be the victim; you look aggressive'
+                        },
+                        { 
+                            id: 'deflect', 
+                            text: '"I appreciate your concern. How have you been?"',
+                            pattern: 'First principles response - gracious deflection',
+                            outcome: 'Doesn\'t take the bait; maintains dignity; redirects conversation'
+                        },
+                        { 
+                            id: 'direct', 
+                            text: '"That felt like a criticism dressed up as concern. If you have something to say, say it directly."',
+                            pattern: 'First principles response - naming the dynamic',
+                            outcome: 'Calls out the pattern; may create discomfort but establishes clarity'
+                        }
+                    ]
+                },
+                {
+                    id: 12,
+                    title: "The Dumb Act",
+                    situation: 'Your partner "forgets" to pick up the prescription you asked him to get three times. When you bring it up, he says, "Oh man, I totally spaced! You know how my memory is. Can you just text me reminders?" You\'ve texted him. Twice.',
+                    emotions: [
+                        { id: 'frustrated', label: 'Frustrated', desc: 'This is not about memory' },
+                        { id: 'tired', label: 'Exhausted', desc: 'I can\'t manage everything' },
+                        { id: 'doubtful', label: 'Doubtful', desc: 'Am I being unreasonable?' },
+                        { id: 'clear', label: 'Clear', desc: 'This is avoidance' }
+                    ],
+                    patterns: [
+                        { id: 'incompetence', label: 'Weaponized incompetence', insight: 'If he fails enough, you\'ll stop asking' },
+                        { id: 'responsibility', label: 'The responsibility is shifting back to me', insight: 'Now you\'re managing the reminders AND the task' },
+                        { id: 'gaslight', label: 'I\'m being made to doubt my perception', insight: '"You know how my memory is" makes it your problem to solve' },
+                        { id: 'outcome', label: 'What\'s the outcome he wants?', insight: 'Behavior that continues is behavior that\'s working for someone' }
+                    ],
+                    principles: [
+                        { id: 'capable', label: 'He is capable of remembering what matters to him', type: 'core' },
+                        { id: 'manager', label: 'I\'m not his memory manager', type: 'core' },
+                        { id: 'pattern', label: 'Patterns reveal priorities', type: 'core' },
+                        { id: 'outcome', label: 'I can focus on outcome, not excuses', type: 'core' },
+                        { id: 'consequence', label: 'Natural consequences teach', type: 'boundary' },
+                        { id: 'task', label: 'I can stop taking on his tasks', type: 'boundary' }
+                    ],
+                    responses: [
+                        { 
+                            id: 'enable', 
+                            text: '"Okay, I\'ll set up automatic reminders for you. Maybe I should just get it myself next time."',
+                            pattern: 'Over-functioning - solving his problem',
+                            outcome: 'Pattern intensifies; you become his executive function; resentment builds'
+                        },
+                        { 
+                            id: 'accusation', 
+                            text: '"You\'re not forgetting—you just don\'t care. You remember what matters to you!"',
+                            pattern: 'Attacking - focusing on his character',
+                            outcome: 'He gets defensive; issue doesn\'t get solved; you look like the nag'
+                        },
+                        { 
+                            id: 'outcome', 
+                            text: '"I need the prescription picked up. I\'ve asked three times. What\'s your plan to make sure it happens?"',
+                            pattern: 'First principles response - focusing on outcome',
+                            outcome: 'Puts responsibility where it belongs; doesn\'t accept the excuse'
+                        },
+                        { 
+                            id: 'consequence', 
+                            text: '"I\'ve asked three times. I\'m not asking again. If you need help managing this, say so. Otherwise, I\'m trusting you\'ll handle it."',
+                            pattern: 'First principles response - clear expectation with natural consequence',
+                            outcome: 'Stops the cycle; lets the consequence teach; maintains your dignity'
+                        }
+                    ]
+                },
+                {
+                    id: 13,
+                    title: "The Host by Default",
+                    situation: 'Your family group chat lights up planning the holiday. Everyone assumes it\'s at your house. Again. No one asks. Someone posts, "Can\'t wait! Should we bring the usual?" You\'ve hosted the last six gatherings. You\'re exhausted just thinking about it.',
+                    emotions: [
+                        { id: 'resentful', label: 'Resentful', desc: 'Why is it always me?' },
+                        { id: 'trapped', label: 'Trapped', desc: 'How do I say no now?' },
+                        { id: 'guilty', label: 'Guilty', desc: 'They\'ll be disappointed' },
+                        { id: 'clear', label: 'Clear', desc: 'I need this to change' }
+                    ],
+                    patterns: [
+                        { id: 'default', label: 'I\'ve become the default host', insight: 'What you permit, you promote' },
+                        { id: 'invisible', label: 'My labor is invisible to them', insight: 'They see the gathering, not the work' },
+                        { id: 'value', label: 'My time is valued less than theirs', insight: 'Notice who always has somewhere else to be' },
+                        { id: 'standard', label: 'I have a standard for reciprocity', insight: 'This is about fairness, not perfection' }
+                    ],
+                    principles: [
+                        { id: 'deserve', label: 'I deserve reciprocity in relationships', type: 'core' },
+                        { id: 'capacity', label: 'My capacity matters', type: 'core' },
+                        { id: 'ask', label: 'Hosting should be offered, not assumed', type: 'core' },
+                        { id: 'no', label: 'No is a complete sentence', type: 'core' },
+                        { id: 'explain', label: 'I don\'t have to explain my capacity', type: 'boundary' },
+                        { id: 'feelings', label: 'Their disappointment is not my emergency', type: 'boundary' }
+                    ],
+                    responses: [
+                        { 
+                            id: 'comply', 
+                            text: '(Say nothing, start planning, silently resent everyone)',
+                            pattern: 'Silent compliance - suffering without speaking',
+                            outcome: 'You host again; pattern locks in; resentment poisons the gathering'
+                        },
+                        { 
+                            id: 'martyr', 
+                            text: '"I GUESS I\'ll host AGAIN since NO ONE ELSE ever offers."',
+                            pattern: 'Martyrdom - guilting while complying',
+                            outcome: 'Everyone feels bad; you still host; nobody learned anything'
+                        },
+                        { 
+                            id: 'redirect', 
+                            text: '"I\'ve loved hosting, and I need a break this year. Who else can take it?"',
+                            pattern: 'First principles response - clear boundary with care',
+                            outcome: 'Opens conversation; distributes labor; models asking for what you need'
+                        },
+                        { 
+                            id: 'decline', 
+                            text: '"I\'m not hosting this year. Happy to bring a dish if someone else wants to host!"',
+                            pattern: 'First principles response - simple and clear',
+                            outcome: 'Establishes boundary; shows you\'re still participating; forces redistribution'
+                        }
+                    ]
+                },
+                {
+                    id: 14,
+                    title: "The Time Tax",
+                    situation: 'A friend texts: "Can you talk? I need advice." You say you have 15 minutes. An hour later, she\'s still talking. When you try to end the call, she says, "Wait, just one more thing..." Your meeting started 10 minutes ago.',
+                    emotions: [
+                        { id: 'trapped', label: 'Trapped', desc: 'How do I get off this call?' },
+                        { id: 'resentful', label: 'Resentful', desc: 'She does this every time' },
+                        { id: 'guilty', label: 'Guilty', desc: 'She really needs me' },
+                        { id: 'clear', label: 'Clear', desc: 'My time matters too' }
+                    ],
+                    patterns: [
+                        { id: 'tax', label: 'There\'s a time tax on my generosity', insight: 'She takes more than you offer' },
+                        { id: 'boundary', label: 'My boundaries aren\'t being respected', insight: 'When you said 15 minutes, she heard "negotiate"' },
+                        { id: 'implicit', label: 'My time is implicitly less valuable', insight: 'Would she do this to her boss?' },
+                        { id: 'teach', label: 'I\'ve taught her my boundaries are flexible', insight: 'She keeps pushing because it keeps working' }
+                    ],
+                    principles: [
+                        { id: 'valuable', label: 'My time is valuable', type: 'core' },
+                        { id: 'boundary', label: 'Boundaries mean nothing if I don\'t hold them', type: 'core' },
+                        { id: 'interrupt', label: 'I can interrupt someone who won\'t stop', type: 'core' },
+                        { id: 'need', label: 'Her need doesn\'t override my boundary', type: 'core' },
+                        { id: 'rude', label: 'Holding a boundary is not rude', type: 'boundary' },
+                        { id: 'guilt', label: 'I can let her feel disappointed', type: 'boundary' }
+                    ],
+                    responses: [
+                        { 
+                            id: 'stay', 
+                            text: '(Stay on the call, miss the meeting, feel resentful)',
+                            pattern: 'Abandoning boundary - prioritizing her comfort over your commitment',
+                            outcome: 'You\'re late; she learns the boundary doesn\'t matter; pattern continues'
+                        },
+                        { 
+                            id: 'hint', 
+                            text: '"Mmm-hmm... yeah... uh-huh..." (hoping she\'ll notice you need to go)',
+                            pattern: 'Indirect communication - hoping she\'ll read the room',
+                            outcome: 'She doesn\'t notice; you stay trapped; resentment builds'
+                        },
+                        { 
+                            id: 'interrupt', 
+                            text: '"I have to stop you there—I said 15 minutes and I have a meeting. Let\'s pick this up later."',
+                            pattern: 'First principles response - direct and kind',
+                            outcome: 'Honors your boundary; models direct communication; teaches her the limit is real'
+                        },
+                        { 
+                            id: 'exit', 
+                            text: '"I care about this conversation and I have to go right now. Can we schedule time later this week?"',
+                            pattern: 'First principles response - firm boundary with continued connection',
+                            outcome: 'Ends the call; shows care; offers alternative without negotiating the now'
+                        }
+                    ]
+                },
+                {
+                    id: 15,
+                    title: "The Emotional Landfill",
+                    situation: 'Your friend calls—again—to process her relationship drama. She doesn\'t ask how you are. She didn\'t show up when your mom was sick. But she "really needs to talk." You feel yourself automatically saying "Of course, tell me everything" while your heart says "not again."',
+                    emotions: [
+                        { id: 'drained', label: 'Drained', desc: 'I have nothing left to give' },
+                        { id: 'resentful', label: 'Resentful', desc: 'Where was she when I needed her?' },
+                        { id: 'guilty', label: 'Guilty', desc: 'Friends are supposed to be there' },
+                        { id: 'clear', label: 'Clear', desc: 'This is one-sided' }
+                    ],
+                    patterns: [
+                        { id: 'landfill', label: 'I\'m her emotional landfill', insight: 'She dumps; you hold; the balance is broken' },
+                        { id: 'reciprocity', label: 'Reciprocity doesn\'t exist here', insight: 'Real friendship flows both ways' },
+                        { id: 'role', label: 'I\'m the therapist, not the friend', insight: 'You listen; she never asks' },
+                        { id: 'standard', label: 'My standard for friendship is higher than this', insight: 'Standards aren\'t mean; they\'re self-respect' }
+                    ],
+                    principles: [
+                        { id: 'reciprocal', label: 'Healthy friendships are reciprocal', type: 'core' },
+                        { id: 'capacity', label: 'I can offer what I have capacity for', type: 'core' },
+                        { id: 'deserve', label: 'I deserve to be asked about my life', type: 'core' },
+                        { id: 'both', label: 'Both people matter in a friendship', type: 'core' },
+                        { id: 'no', label: 'I can say no to being someone\'s dumping ground', type: 'boundary' },
+                        { id: 'standard', label: 'I can have standards for how I\'m treated', type: 'boundary' }
+                    ],
+                    responses: [
+                        { 
+                            id: 'absorb', 
+                            text: '"Of course! Tell me everything." (Then listening for 90 minutes)',
+                            pattern: 'Over-functioning - being endlessly available',
+                            outcome: 'Your needs disappear; she takes more; you resent the friendship'
+                        },
+                        { 
+                            id: 'explode', 
+                            text: '"Actually, where were YOU when I needed someone? This friendship is so one-sided!"',
+                            pattern: 'Explosion - dumping accumulated resentment',
+                            outcome: 'Valid feelings, poor delivery; she\'ll be defensive; friendship may implode'
+                        },
+                        { 
+                            id: 'honest', 
+                            text: '"I care about you, and I don\'t have capacity right now. Can I call you later this week?"',
+                            pattern: 'First principles response - honest about capacity',
+                            outcome: 'Honors your limits; still shows care; begins to reset expectations'
+                        },
+                        { 
+                            id: 'redirect', 
+                            text: '"Before we dive in, I need to share something too. I\'ve been needing support lately and haven\'t felt that flow from you."',
+                            pattern: 'First principles response - addressing the pattern directly',
+                            outcome: 'Names the imbalance; invites real friendship; may shift dynamic or reveal its limits'
+                        }
+                    ]
+                },
+                {
+                    id: 16,
+                    title: "The Advice Expert (Who Takes None)",
+                    situation: 'Your brother lectures you about better communication in relationships. He says you\'re "too sensitive" and need to "let things go." This is the same brother who hasn\'t spoken to his son in three years over a minor disagreement. You feel the irony rising in your throat.',
+                    emotions: [
+                        { id: 'amused', label: 'Amused', desc: 'The irony is breathtaking' },
+                        { id: 'irritated', label: 'Irritated', desc: 'The hypocrisy is stunning' },
+                        { id: 'clear', label: 'Clear', desc: 'He can\'t see himself' },
+                        { id: 'curious', label: 'Curious', desc: 'Why is this so common?' }
+                    ],
+                    patterns: [
+                        { id: 'projection', label: 'He\'s seeing his issue in me', insight: 'What we condemn in others often lives in us' },
+                        { id: 'expert', label: 'Knowing and doing are different', insight: 'It\'s easier to diagnose others than face ourselves' },
+                        { id: 'deflection', label: 'Advice-giving is deflection', insight: 'Focus on your life = don\'t look at mine' },
+                        { id: 'mirror', label: 'This is a mirror moment', insight: 'Do I do this too? (Spoiler: sometimes yes)' }
+                    ],
+                    principles: [
+                        { id: 'hypocrisy', label: 'We all have areas of hypocrisy', type: 'core' },
+                        { id: 'knowing', label: 'Knowing intellectually ≠ living it', type: 'core' },
+                        { id: 'point', label: 'I don\'t need to point out the irony', type: 'core' },
+                        { id: 'advice', label: 'I can decline unrequested advice', type: 'core' },
+                        { id: 'mirror', label: 'His blind spots remind me to check my own', type: 'boundary' },
+                        { id: 'trap', label: 'Pointing out hypocrisy is often a trap', type: 'boundary' }
+                    ],
+                    responses: [
+                        { 
+                            id: 'point', 
+                            text: '"That\'s rich coming from someone who hasn\'t spoken to his own son in three years."',
+                            pattern: 'Pointing out hypocrisy - feels good, goes nowhere',
+                            outcome: 'He gets defensive; conversation derails; nobody learns; you look petty'
+                        },
+                        { 
+                            id: 'absorb', 
+                            text: '"You\'re probably right. I should work on that."',
+                            pattern: 'False agreement - avoiding conflict',
+                            outcome: 'He feels validated; you feel inauthentic; nothing changes'
+                        },
+                        { 
+                            id: 'deflect', 
+                            text: '"Thanks for the input. I\'ll think about it."',
+                            pattern: 'First principles response - gracious exit',
+                            outcome: 'Ends the advice-giving without engaging; maintains dignity'
+                        },
+                        { 
+                            id: 'humor', 
+                            text: '"I love that we\'re both experts on relationships we struggle with. It\'s very human of us."',
+                            pattern: 'First principles response - humor and humility',
+                            outcome: 'Acknowledges the gap without attack; invites self-awareness; keeps connection'
+                        }
+                    ]
+                },
+                {
+                    id: 17,
+                    title: "The Communication Coach (Who Can't Communicate)",
+                    situation: 'Your partner gets upset that you didn\'t "hear" what he really meant. He wants you to be more intuitive, read between the lines. Yet when you say "I feel hurt," he says you\'re "being dramatic." You realize: he wants perfect understanding while offering none.',
+                    emotions: [
+                        { id: 'frustrated', label: 'Frustrated', desc: 'The double standard is exhausting' },
+                        { id: 'clear', label: 'Clear', desc: 'I see the pattern now' },
+                        { id: 'tired', label: 'Tired', desc: 'I can\'t win this game' },
+                        { id: 'resolved', label: 'Resolved', desc: 'I know what I need' }
+                    ],
+                    patterns: [
+                        { id: 'double', label: 'Different rules for different people', insight: 'He wants understanding he won\'t give' },
+                        { id: 'mindread', label: 'I\'m expected to mind-read; he\'s not', insight: 'One person does all the emotional labor' },
+                        { id: 'standard', label: 'His communication standard applies only to me', insight: 'This is about power, not communication' },
+                        { id: 'cost', label: 'What\'s the cost of staying in this dance?', insight: 'Some games aren\'t worth winning' }
+                    ],
+                    principles: [
+                        { id: 'both', label: 'Communication is a two-way skill', type: 'core' },
+                        { id: 'standard', label: 'Standards apply to both people', type: 'core' },
+                        { id: 'labor', label: 'Emotional labor should be shared', type: 'core' },
+                        { id: 'clear', label: 'I can ask for direct communication', type: 'core' },
+                        { id: 'accept', label: 'I can\'t make him see the double standard', type: 'boundary' },
+                        { id: 'pattern', label: 'Patterns reveal character', type: 'boundary' }
+                    ],
+                    responses: [
+                        { 
+                            id: 'try', 
+                            text: '"You\'re right, I should have known. I\'ll try harder to understand."',
+                            pattern: 'Taking full responsibility - accepting the double standard',
+                            outcome: 'You exhaust yourself; imbalance deepens; pattern continues'
+                        },
+                        { 
+                            id: 'attack', 
+                            text: '"Are you serious? You want me to read your mind while you dismiss my feelings?"',
+                            pattern: 'Calling out the hypocrisy - accurate but escalating',
+                            outcome: 'He deflects; you\'re the "dramatic" one; issue unresolved'
+                        },
+                        { 
+                            id: 'mirror', 
+                            text: '"I hear you wanting me to understand your unspoken needs. I need the same from you."',
+                            pattern: 'First principles response - naming the reciprocity need',
+                            outcome: 'Makes the expectation mutual; invites self-awareness; tests willingness'
+                        },
+                        { 
+                            id: 'boundary', 
+                            text: '"I can only respond to what you say, not what you mean. If something matters, please say it directly."',
+                            pattern: 'First principles response - setting clear communication standard',
+                            outcome: 'Refuses the mind-reading game; models direct communication; holds the line'
+                        }
+                    ]
+                },
+                {
+                    id: 18,
+                    title: "The Smartest Person in the Room",
+                    situation: 'At a dinner party, someone (who might be you) is explaining why everyone else\'s approach is wrong. You hear yourself using phrases like "Actually..." and "Well, technically..." You\'re right. You\'re also making everyone uncomfortable. Including yourself.',
+                    emotions: [
+                        { id: 'superior', label: 'Superior', desc: 'I know more than they do' },
+                        { id: 'uncomfortable', label: 'Uncomfortable', desc: 'Why does everyone look annoyed?' },
+                        { id: 'defensive', label: 'Defensive', desc: 'I\'m just being accurate' },
+                        { id: 'aware', label: 'Self-Aware', desc: 'Oh no, I\'m doing it again' }
+                    ],
+                    patterns: [
+                        { id: 'need', label: 'I need to be seen as smart', insight: 'What am I proving, and to whom?' },
+                        { id: 'connection', label: 'I\'m choosing being right over connection', insight: 'You can be right or you can be close' },
+                        { id: 'anxiety', label: 'Correction is anxiety management', insight: 'When we can\'t tolerate others being wrong' },
+                        { id: 'mirror', label: 'Everyone does this sometimes', insight: 'Self-awareness is the first step to freedom' }
+                    ],
+                    principles: [
+                        { id: 'right', label: 'Being right doesn\'t make me valuable', type: 'core' },
+                        { id: 'correct', label: 'Not everything needs to be corrected', type: 'core' },
+                        { id: 'cost', label: 'There\'s a cost to always being right', type: 'core' },
+                        { id: 'connection', label: 'Connection matters more than accuracy', type: 'core' },
+                        { id: 'pause', label: 'I can pause before correcting', type: 'boundary' },
+                        { id: 'laugh', label: 'I can laugh at myself', type: 'boundary' }
+                    ],
+                    responses: [
+                        { 
+                            id: 'continue', 
+                            text: '(Keep correcting everyone because facts matter)',
+                            pattern: 'Doubling down - prioritizing rightness over relationship',
+                            outcome: 'You\'re accurate and alone; people avoid deep conversations with you'
+                        },
+                        { 
+                            id: 'justify', 
+                            text: '"I\'m just being accurate. Someone has to care about facts."',
+                            pattern: 'Defending the pattern - missing the real issue',
+                            outcome: 'You\'re still the problem; others see it; you don\'t yet'
+                        },
+                        { 
+                            id: 'notice', 
+                            text: '(Pause mid-sentence, notice what you\'re doing, choose differently)',
+                            pattern: 'Self-awareness in real-time - catching yourself',
+                            outcome: 'The pattern begins to shift; you feel the choice; growth happens'
+                        },
+                        { 
+                            id: 'humor', 
+                            text: '"And there I go again with \'actually.\' Sorry, recovering know-it-all over here."',
+                            pattern: 'First principles response - self-awareness with humor',
+                            outcome: 'Disarms the moment; invites connection; models humility; everyone relaxes'
+                        }
+                    ]
+                },
+                {
+                    id: 19,
+                    title: "The Rest vs. The Request",
+                    situation: 'You finally have a rare Saturday to yourself. No plans. Just rest. Your friend texts: "My car broke down and I need a ride to pick up a rental. It\'s kind of urgent—can you help?" She lives 40 minutes away. The rental place closes in three hours. You\'re in your pajamas.',
+                    emotions: [
+                        { id: 'torn', label: 'Torn', desc: 'I want to help but I need this day' },
+                        { id: 'guilty', label: 'Guilty', desc: 'She really needs help' },
+                        { id: 'resentful', label: 'Resentful', desc: 'Why me? Why today?' },
+                        { id: 'clear', label: 'Clear', desc: 'Both needs are valid' }
+                    ],
+                    patterns: [
+                        { id: 'compete', label: 'Two legitimate needs are competing', insight: 'Your rest matters even when someone needs help' },
+                        { id: 'urgent', label: 'Urgency doesn\'t equal obligation', insight: 'Her emergency isn\'t automatically your responsibility' },
+                        { id: 'cost', label: 'Every yes has a cost', insight: 'What am I saying no to when I say yes?' },
+                        { id: 'clarity', label: 'No clear right answer exists', insight: 'Both choices have integrity; neither is wrong' }
+                    ],
+                    principles: [
+                        { id: 'rest', label: 'My rest is not less important than her convenience', type: 'core' },
+                        { id: 'urgent', label: 'Urgent for her doesn\'t mean urgent for me', type: 'core' },
+                        { id: 'both', label: 'Both of our needs matter', type: 'core' },
+                        { id: 'options', label: 'She likely has other options', type: 'core' },
+                        { id: 'no', label: 'No is a complete sentence', type: 'boundary' },
+                        { id: 'choose', label: 'I can choose my needs without guilt', type: 'boundary' }
+                    ],
+                    responses: [
+                        { 
+                            id: 'abandon', 
+                            text: '"Of course! Give me 30 minutes and I\'ll head your way."',
+                            pattern: 'Automatic yes - abandoning your needs',
+                            outcome: 'Your rest disappears; resentment grows; pattern of self-abandonment continues',
+                            tradeoff: 'Connection and helpfulness vs. your wellbeing and boundary'
+                        },
+                        { 
+                            id: 'options', 
+                            text: '"Oh no! I\'m not available today. Have you tried Uber/Lyft? Or can your partner help?"',
+                            pattern: 'First principles response - offering alternatives',
+                            outcome: 'Maintains boundary; shows care; invites her to problem-solve',
+                            tradeoff: 'Potential disappointment vs. honoring your needs'
+                        },
+                        { 
+                            id: 'honest', 
+                            text: '"I\'m torn. I really need this rest day and I care about you. Can I help you brainstorm other options?"',
+                            pattern: 'First principles response - honest about the conflict',
+                            outcome: 'Names the tension; stays connected; doesn\'t abandon yourself',
+                            tradeoff: 'Vulnerability about limits vs. being the immediate solution'
+                        },
+                        { 
+                            id: 'boundary', 
+                            text: '"I\'m not available today. I hope you find a solution!"',
+                            pattern: 'First principles response - clean boundary',
+                            outcome: 'Protects your rest; trusts her capability; no guilt required',
+                            tradeoff: 'Clear boundary vs. being seen as unhelpful'
+                        }
+                    ]
+                },
+                {
+                    id: 20,
+                    title: "The Standard vs. The Boundary",
+                    situation: 'Your friend consistently shows up 20-30 minutes late. You\'ve mentioned it bothers you. She says, "I\'m just not a punctual person—you know how I am!" You\'re deciding: is this a boundary (stop making plans) or a standard (I value punctuality in close friendships)?',
+                    emotions: [
+                        { id: 'frustrated', label: 'Frustrated', desc: 'This keeps happening' },
+                        { id: 'confused', label: 'Confused', desc: 'Is this worth ending a friendship over?' },
+                        { id: 'clear', label: 'Clear', desc: 'I know what matters to me' },
+                        { id: 'curious', label: 'Curious', desc: 'What am I really dealing with?' }
+                    ],
+                    patterns: [
+                        { id: 'identity', label: 'She\'s made lateness her identity', insight: 'When people tell you who they are, believe them' },
+                        { id: 'standard', label: 'This is about standards, not boundaries', insight: 'Standards guide; boundaries protect' },
+                        { id: 'accept', label: 'Can I accept this as part of the package?', insight: 'Not every frustration requires action' },
+                        { id: 'cost', label: 'What\'s the cost of staying vs. leaving?', insight: 'Both choices are valid; neither is wrong' }
+                    ],
+                    principles: [
+                        { id: 'standard', label: 'I have standards for how I want to be treated', type: 'core' },
+                        { id: 'identity', label: 'Her identity statement doesn\'t obligate my acceptance', type: 'core' },
+                        { id: 'both', label: 'We can both be ourselves', type: 'core' },
+                        { id: 'compatible', label: 'Sometimes people just aren\'t compatible', type: 'core' },
+                        { id: 'adjust', label: 'I can adjust my expectations or my investment', type: 'boundary' },
+                        { id: 'choose', label: 'I can choose the friendship level that works', type: 'boundary' }
+                    ],
+                    responses: [
+                        { 
+                            id: 'accept', 
+                            text: '(Accept it, adjust expectations, plan accordingly)',
+                            pattern: 'Acceptance - choosing the friendship with eyes open',
+                            outcome: 'Frustration decreases; you plan for her lateness; friendship continues',
+                            tradeoff: 'Accepting this trait vs. enforcing your standard'
+                        },
+                        { 
+                            id: 'boundary', 
+                            text: '"I care about you, and chronic lateness doesn\'t work for me. I need to step back from regular plans."',
+                            pattern: 'Boundary - choosing your standard',
+                            outcome: 'Protects your time; may reduce closeness; honors what matters to you',
+                            tradeoff: 'The friendship depth vs. your standard for respect'
+                        },
+                        { 
+                            id: 'creative', 
+                            text: '"I hear you. How about we do activities where timing matters less? Walks, open-ended coffee?"',
+                            pattern: 'Creative solution - adapting the relationship',
+                            outcome: 'Maintains connection; reduces friction; finds compatibility',
+                            tradeoff: 'Flexibility in format vs. your ideal friendship style'
+                        },
+                        { 
+                            id: 'clarity', 
+                            text: '"I value punctuality in close friendships. If that\'s not you, I understand. We might be better as occasional friends."',
+                            pattern: 'Clear standard - naming the incompatibility with grace',
+                            outcome: 'Honest about fit; allows natural distance; no one is wrong',
+                            tradeoff: 'Clarity and standards vs. maintaining closeness'
+                        }
+                    ]
+                }
+            ];
+
+            const currentScenarioData = scenarios[currentScenario];
+
+            const handleEmotionSelect = (emotion) => {
+                setSelectedEmotion(emotion);
+                setGameStage('pattern');
+            };
+
+            const handlePatternSelect = (pattern) => {
+                setRecognizedPattern(pattern);
+                setGameStage('pause');
+            };
+
+            const handlePrincipleToggle = (principle) => {
+                setSelectedPrinciples(prev => 
+                    prev.find(p => p.id === principle.id)
+                        ? prev.filter(p => p.id !== principle.id)
+                        : [...prev, principle]
+                );
+            };
+
+            const handleResponseSelect = (response) => {
+                setSelectedResponse(response);
+                
+                const insight = {
+                    emotion: selectedEmotion,
+                    pattern: recognizedPattern,
+                    principles: selectedPrinciples,
+                    response: response,
+                    scenario: currentScenarioData.title
+                };
+                
+                setInsights([...insights, insight]);
+                setGameStage('reflection');
+            };
+
+            const nextScenario = () => {
+                if (currentScenario < scenarios.length - 1) {
+                    setCurrentScenario(currentScenario + 1);
+                    setGameStage('scenario');
+                    setSelectedEmotion(null);
+                    setRecognizedPattern(null);
+                    setSelectedPrinciples([]);
+                    setSelectedResponse(null);
+                } else {
+                    setGameStage('complete');
+                }
+            };
+
+            const restart = () => {
+                setCurrentScenario(0);
+                setGameStage('scenario');
+                setSelectedEmotion(null);
+                setRecognizedPattern(null);
+                setSelectedPrinciples([]);
+                setSelectedResponse(null);
+                setInsights([]);
+            };
+
+            return (
+                <div className="min-h-screen bg-gradient-to-br from-rose-50 via-amber-50 to-purple-50 p-6">
+                    <div className="max-w-3xl mx-auto">
+                        <div className="text-center mb-8">
+                            <div className="flex items-center justify-center gap-3 mb-3">
+                                <Sparkles className="text-purple-600" size={32} />
+                                <h1 className="text-3xl font-bold text-gray-800">Emotional Wisdom Practice</h1>
+                            </div>
+                            <p className="text-gray-600">Building the space between feeling and responding</p>
+                            {gameStage !== 'complete' && (
+                                <div className="mt-4">
+                                    <div className="text-sm text-gray-600 mb-2">Scenario {currentScenario + 1} of {scenarios.length}</div>
+                                    <div className="flex gap-1 justify-center flex-wrap max-w-md mx-auto">
+                                        {scenarios.map((_, idx) => (
+                                            <div 
+                                                key={idx}
+                                                className={`w-2 h-2 rounded-full ${
+                                                    idx === currentScenario ? 'bg-purple-600' : 
+                                                    idx < currentScenario ? 'bg-purple-300' : 'bg-gray-300'
+                                                }`}
+                                            />
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        {gameStage === 'scenario' && (
+                            <div className="bg-white rounded-2xl shadow-lg p-8 mb-6">
+                                <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+                                    {currentScenarioData.title}
+                                </h2>
+                                <p className="text-lg text-gray-700 leading-relaxed mb-6">
+                                    {currentScenarioData.situation}
+                                </p>
+                                <button
+                                    onClick={() => setGameStage('emotion')}
+                                    className="w-full bg-purple-600 text-white py-3 rounded-lg font-medium hover:bg-purple-700 transition flex items-center justify-center gap-2"
+                                >
+                                    Explore This Moment <ArrowRight size={20} />
+                                </button>
+                            </div>
+                        )}
+
+                        {gameStage === 'emotion' && (
+                            <div className="bg-white rounded-2xl shadow-lg p-8 mb-6">
+                                <div className="flex items-center gap-3 mb-6">
+                                    <Heart className="text-rose-600" size={28} />
+                                    <h2 className="text-2xl font-semibold text-gray-800">What are you feeling?</h2>
+                                </div>
+                                <p className="text-gray-600 mb-6 italic">
+                                    There's no wrong answer. Just notice what arises.
+                                </p>
+                                <div className="grid gap-3">
+                                    {currentScenarioData.emotions.map(emotion => (
+                                        <button
+                                            key={emotion.id}
+                                            onClick={() => handleEmotionSelect(emotion)}
+                                            className="text-left p-4 rounded-lg border-2 border-gray-200 hover:border-rose-300 hover:bg-rose-50 transition"
+                                        >
+                                            <div className="font-semibold text-gray-800">{emotion.label}</div>
+                                            <div className="text-sm text-gray-600 mt-1">{emotion.desc}</div>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {gameStage === 'pattern' && (
+                            <div className="bg-white rounded-2xl shadow-lg p-8 mb-6">
+                                <div className="flex items-center gap-3 mb-6">
+                                    <Eye className="text-indigo-600" size={28} />
+                                    <h2 className="text-2xl font-semibold text-gray-800">What's really happening here?</h2>
+                                </div>
+                                <p className="text-gray-600 mb-6">
+                                    Beyond the feeling, what pattern do you recognize?
+                                </p>
+                                <div className="grid gap-3">
+                                    {currentScenarioData.patterns.map(pattern => (
+                                        <button
+                                            key={pattern.id}
+                                            onClick={() => handlePatternSelect(pattern)}
+                                            className="text-left p-4 rounded-lg border-2 border-gray-200 hover:border-indigo-300 hover:bg-indigo-50 transition"
+                                        >
+                                            <div className="font-semibold text-gray-800 mb-1">{pattern.label}</div>
+                                            <div className="text-sm text-indigo-600 italic">{pattern.insight}</div>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {gameStage === 'pause' && (
+                            <div className="bg-white rounded-2xl shadow-lg p-8 mb-6">
+                                <div className="text-center">
+                                    <div className="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                                        <Heart className="text-purple-600" size={36} />
+                                    </div>
+                                    <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+                                        You're feeling: {selectedEmotion.label}
+                                    </h2>
+                                    <p className="text-gray-600 mb-2 italic">"{selectedEmotion.desc}"</p>
+                                    <div className="bg-indigo-50 p-4 rounded-lg my-4">
+                                        <p className="text-sm text-indigo-800 font-semibold mb-1">Pattern Recognition:</p>
+                                        <p className="text-gray-700">{recognizedPattern.label}</p>
+                                        <p className="text-sm text-indigo-600 italic mt-2">{recognizedPattern.insight}</p>
+                                    </div>
+                                    <div className="bg-amber-50 border-l-4 border-amber-400 p-6 my-6 text-left">
+                                        <p className="text-gray-700 leading-relaxed">
+                                            <strong>Take a breath.</strong> You see what's happening. This feeling is real. The pattern is real. And... you have choice in what comes next. There's space between recognition and reaction. This is where your power lives.
+                                        </p>
+                                    </div>
+                                    <button
+                                        onClick={() => setGameStage('principles')}
+                                        className="bg-purple-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-purple-700 transition"
+                                    >
+                                        I'm Ready to Choose
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+                        {gameStage === 'principles' && (
+                            <div className="bg-white rounded-2xl shadow-lg p-8 mb-6">
+                                <div className="flex items-center gap-3 mb-6">
+                                    <Brain className="text-purple-600" size={28} />
+                                    <h2 className="text-2xl font-semibold text-gray-800">What's true here?</h2>
+                                </div>
+                                <p className="text-gray-600 mb-6">
+                                    Select the fundamental truths that resonate with you in this situation. These are your anchors.
+                                </p>
+                                <div className="grid gap-3 mb-6">
+                                    {currentScenarioData.principles.map(principle => (
+                                        <button
+                                            key={principle.id}
+                                            onClick={() => handlePrincipleToggle(principle)}
+                                            className={`text-left p-4 rounded-lg border-2 transition ${
+                                                selectedPrinciples.find(p => p.id === principle.id)
+                                                    ? 'border-purple-500 bg-purple-50'
+                                                    : 'border-gray-200 hover:border-purple-300'
+                                            }`}
+                                        >
+                                            <div className="flex items-center gap-2">
+                                                <div className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
+                                                    selectedPrinciples.find(p => p.id === principle.id)
+                                                        ? 'bg-purple-600 border-purple-600'
+                                                        : 'border-gray-300'
+                                                }`}>
+                                                    {selectedPrinciples.find(p => p.id === principle.id) && (
+                                                        <div className="w-2 h-2 bg-white rounded-full" />
+                                                    )}
+                                                </div>
+                                                <span className="font-medium text-gray-800">{principle.label}</span>
+                                                <span className="text-xs text-gray-500 ml-auto">
+                                                    {principle.type === 'core' ? '🎯 Core truth' : '🛡️ Boundary'}
+                                                </span>
+                                            </div>
+                                        </button>
+                                    ))}
+                                </div>
+                                {selectedPrinciples.length > 0 && (
+                                    <button
+                                        onClick={() => setGameStage('response')}
+                                        className="w-full bg-purple-600 text-white py-3 rounded-lg font-medium hover:bg-purple-700 transition flex items-center justify-center gap-2"
+                                    >
+                                        Choose Your Response <ArrowRight size={20} />
+                                    </button>
+                                )}
+                            </div>
+                        )}
+
+                        {gameStage === 'response' && (
+                            <div className="bg-white rounded-2xl shadow-lg p-8 mb-6">
+                                <h2 className="text-2xl font-semibold text-gray-800 mb-6">
+                                    How will you respond?
+                                </h2>
+                                <div className="grid gap-4">
+                                    {currentScenarioData.responses.map(response => (
+                                        <button
+                                            key={response.id}
+                                            onClick={() => handleResponseSelect(response)}
+                                            className="text-left p-5 rounded-lg border-2 border-gray-200 hover:border-purple-300 hover:bg-purple-50 transition"
+                                        >
+                                            <div className="font-medium text-gray-800 mb-2">"{response.text}"</div>
+                                            <div className="text-sm text-gray-600 mb-1">
+                                                <span className="font-semibold">Pattern:</span> {response.pattern}
+                                            </div>
+                                            {response.tradeoff && (
+                                                <div className="text-xs text-purple-600 mt-2 italic">
+                                                    Trade-off: {response.tradeoff}
+                                                </div>
+                                            )}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {gameStage === 'reflection' && (
+                            <div className="bg-white rounded-2xl shadow-lg p-8 mb-6">
+                                <div className="flex items-center gap-3 mb-6">
+                                    <Sparkles className="text-amber-600" size={28} />
+                                    <h2 className="text-2xl font-semibold text-gray-800">Your Choice</h2>
+                                </div>
+                                
+                                <div className="space-y-6">
+                                    <div className="bg-rose-50 p-5 rounded-lg">
+                                        <div className="text-sm text-rose-800 font-semibold mb-2">YOU FELT</div>
+                                        <div className="text-gray-800">{selectedEmotion.label}: "{selectedEmotion.desc}"</div>
+                                    </div>
+
+                                    <div className="bg-indigo-50 p-5 rounded-lg">
+                                        <div className="text-sm text-indigo-800 font-semibold mb-2">YOU RECOGNIZED</div>
+                                        <div className="text-gray-800 mb-1">{recognizedPattern.label}</div>
+                                        <div className="text-sm text-indigo-600 italic">{recognizedPattern.insight}</div>
+                                    </div>
+
+                                    <div className="bg-purple-50 p-5 rounded-lg">
+                                        <div className="text-sm text-purple-800 font-semibold mb-2">YOU ANCHORED TO</div>
+                                        <div className="space-y-2">
+                                            {selectedPrinciples.map(p => (
+                                                <div key={p.id} className="text-gray-800">• {p.label}</div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div className="bg-green-50 p-5 rounded-lg">
+                                        <div className="text-sm text-green-800 font-semibold mb-2">YOU CHOSE</div>
+                                        <div className="text-gray-800 mb-3">"{selectedResponse.text}"</div>
+                                        <div className="text-sm text-gray-700">
+                                            <strong>Pattern:</strong> {selectedResponse.pattern}
+                                        </div>
+                                        <div className="text-sm text-gray-700 mt-2">
+                                            <strong>Likely outcome:</strong> {selectedResponse.outcome}
+                                        </div>
+                                        {selectedResponse.tradeoff && (
+                                            <div className="text-sm text-purple-600 mt-2 italic">
+                                                <strong>Trade-off:</strong> {selectedResponse.tradeoff}
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <div className="bg-amber-50 border-l-4 border-amber-400 p-5">
+                                        <p className="text-gray-700 italic">
+                                            Notice: You just practiced something rare and powerful. You felt the feeling. You recognized the pattern. You grounded in your truth. Then you chose your response. This is emotional wisdom. This is freedom.
+                                        </p>
+                                    </div>
+
+                                    <button
+                                        onClick={nextScenario}
+                                        className="w-full bg-purple-600 text-white py-3 rounded-lg font-medium hover:bg-purple-700 transition flex items-center justify-center gap-2"
+                                    >
+                                        {currentScenario < scenarios.length - 1 ? (
+                                            <>Continue to Next Scenario <ArrowRight size={20} /></>
+                                        ) : (
+                                            <>See Your Patterns <ArrowRight size={20} /></>
+                                        )}
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+                        {gameStage === 'complete' && (
+                            <div className="bg-white rounded-2xl shadow-lg p-8">
+                                <div className="text-center mb-8">
+                                    <div className="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                                        <Sparkles className="text-purple-600" size={36} />
+                                    </div>
+                                    <h2 className="text-3xl font-semibold text-gray-800 mb-4">
+                                        Extraordinary Work
+                                    </h2>
+                                    <p className="text-gray-600 text-lg">
+                                        You've just practiced something most people never learn: the art of conscious response. You felt your feelings, recognized the patterns, anchored in truth, and chose your path. This is mastery.
+                                    </p>
+                                </div>
+
+                                <div className="bg-purple-50 p-6 rounded-lg mb-8">
+                                    <h3 className="font-semibold text-gray-800 mb-4 text-lg">Your Journey</h3>
+                                    <div className="space-y-4">
+                                        {insights.map((insight, idx) => (
+                                            <div key={idx} className="bg-white p-4 rounded-lg border border-purple-200">
+                                                <div className="font-semibold text-gray-800 mb-2">{insight.scenario}</div>
+                                                <div className="text-sm text-gray-600 space-y-1">
+                                                    <div>Felt: <span className="font-medium">{insight.emotion.label}</span></div>
+                                                    <div>Saw: <span className="font-medium">{insight.pattern.label}</span></div>
+                                                    <div>Chose: <span className="font-medium">{insight.response.pattern}</span></div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div className="bg-amber-50 border-l-4 border-amber-400 p-6 mb-6">
+                                    <h3 className="font-semibold text-gray-800 mb-3">What's True</h3>
+                                    <p className="text-gray-700 leading-relaxed">
+                                        You're not trying to stop feeling. You're learning to feel fully while choosing wisely. You're not trying to be perfect. You're practicing being aware. That awareness—that beautiful, hard-won space between stimulus and response—is where your freedom lives. Keep practicing. You're becoming someone who knows herself, trusts herself, and responds from that grounded place. This changes everything.
+                                    </p>
+                                </div>
+
+                                <button
+                                    onClick={restart}
+                                    className="w-full bg-purple-600 text-white py-3 rounded-lg font-medium hover:bg-purple-700 transition flex items-center justify-center gap-2"
+                                >
+                                    <RotateCcw size={20} /> Practice Again
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<EmotionalWisdomGame />, document.getElementById('root'));
+    </script>
+</body>
+</html>
+        const Sparkles = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path>
+                <path d="M5 3v4"></path>
+                <path d="M19 17v4"></path>
+                <path d="M3 5h4"></path>
+                <path d="M17 19h4"></path>
+            </svg>
+        );
+
+        const ArrowRight = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+        );
+
+        const RotateCcw = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="1 4 1 10 7 10"></polyline>
+                <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+            </svg>
+        );
+
         const EmotionalWisdomGame = () => {
             const [currentScenario, setCurrentScenario] = useState(0);
             const [gameStage, setGameStage] = useState('scenario');
